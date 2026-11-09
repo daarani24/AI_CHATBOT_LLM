@@ -11,8 +11,8 @@ st.set_page_config(
     page_title="AI Chatbot",
     page_icon="🤖"
 )
-create_table()
 
+create_table()
 st.title("🤖 AI Chatbot")
 
 with st.sidebar:
@@ -55,7 +55,6 @@ if "messages" not in st.session_state:
             "content": "You are a friendly AI assistant."
         }
     ]
-
     previous_messages = load_messages()
 
     for role, message in previous_messages:
@@ -70,6 +69,7 @@ for message in st.session_state.messages:
     if message["role"] == "user":
         with st.chat_message("user"):
             st.write(message["content"])
+
     elif message["role"] == "assistant":
         with st.chat_message("assistant"):
             st.write(message["content"])
@@ -90,14 +90,22 @@ if question:
 
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            answer = get_ai_response(st.session_state.messages, model, temperature, max_tokens)
-            st.write(answer)
+            try:
+                answer = get_ai_response(
+                    st.session_state.messages,
+                    model,
+                    temperature,
+                    max_tokens
+                )
+                st.write(answer)
 
-    st.session_state.messages.append(
-        {
-            "role": "assistant",
-            "content": answer
-        }
-    )
-    save_message("assistant", answer)
-    
+                st.session_state.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": answer
+                    }
+                )
+                save_message("assistant", answer)
+
+            except RuntimeError as e:
+                st.error(str(e))

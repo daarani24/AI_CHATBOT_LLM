@@ -9,10 +9,14 @@ client = Groq(
 )
 
 def get_ai_response(messages, model, temperature, max_tokens):
-    response = client.chat.completions.create(
-        messages=messages,
-        model=model,
-        temperature=temperature,
-        max_tokens=max_tokens
-    )
-    return response.choices[0].message.content
+    try:
+        response = client.chat.completions.create(
+            messages=messages,
+            model=model,
+            temperature=temperature,
+            max_tokens=max_tokens
+        )
+        return response.choices[0].message.content
+    
+    except Exception as e:
+        raise RuntimeError(f"Unable to generate response: {e}") from e
