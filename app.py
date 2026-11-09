@@ -99,4 +99,5 @@ if question:
             "content": answer
         }
     )
+    save_message("assistant", answer)
     
